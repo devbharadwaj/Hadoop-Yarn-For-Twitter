@@ -1,0 +1,91 @@
+
+<html>
+<body>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
+<script src="../scripts/springy.js"></script>
+<script src="../scripts/springyui.js"></script>
+<script>
+
+/*
+	function drawGraph() {
+		$.getJSON('http://localhost:8080/Twitter-Project/launchGraph',
+				function(nodes) {
+					var node;
+					var dist;
+					var distgraph = {};
+					console.log("Nodes!")
+					$.each(nodes, function(key,value) {
+						node = key.split(' ')[0];
+						dist = key.split(' ')[1];
+						graph.newNode({label:'Node:'+node+'Dist:'+dist});
+						distgraph[node] = [dist];
+						console.log(node+':'+dist);
+					});
+					$.getJSON('http://localhost:8080/Twitter-Project/launchGraph',
+							function(edges){
+								var nodeVal;
+								var valueVal;
+								$.each(edges, function(keyVal,valueVal) {
+									nodeVal = keyVal.split(' ')[0];
+									distVal = keyVal.split(' ')[1];
+									$.each(valueVal, function(index,value){
+										graph.newEdge('Node:'+nodeVal+'Dist:'+distVal,
+													  'Node:'+value.toString()+'Dist:'+distgraph[value].toString(),
+													  {color: '#000000'});
+										console.log('added node:'+value+' dist:'+distgraph[value]);
+									});
+								});
+					});
+		});
+	}*/
+		var graph = new Springy.Graph();
+		console.log("Begin");
+		$.getJSON('http://localhost:8080/Twitter-Project/launchGraph',
+				function(nodes) {
+					var jsongraph = {"nodes":[],"edges":[]};
+					$.each(nodes,function(key,value) {
+						node = key.split(' ')[0];
+						jsongraph["nodes"].push(node.toString());
+					});
+					$.getJSON('http://localhost:8080/Twitter-Project/launchGraph',
+							function(edges){
+								var nodeVal;
+								$.each(edges, function(keyVal,valueVal) {
+									nodeVal = keyVal.split(' ')[0];
+									$.each(valueVal, function(indexNum,valueNum) {
+										jsongraph["edges"].push([nodeVal.toString(),valueNum.toString()]);
+									});
+								});
+								$.getJSON('http://localhost:8080/Twitter-Project/launchShortestPath',
+										function(path){
+											var pathedge;
+											var indexval
+											$.each(path, function(node1,node2){
+												pathedge = [node1.toString(),node2.toString()];
+												for (var i = 0; i < jsongraph.edges.length; i++) {
+													if (jsongraph.edges[i][0] == node1.toString()
+																&& jsongraph.edges[i][1] == node2.toString()) {
+														jsongraph.edges.splice(i,1);		
+													}
+												}
+												jsongraph["edges"].push([node1.toString(),node2.toString(),{color: '#FF0000'}])
+												
+											});
+											graph.loadJSON(jsongraph);
+											console.log(jsongraph);
+								});
+					});
+		});
+		
+	jQuery(function(){
+		  var springy = window.springy = jQuery('#springydemo').springy({
+		    graph: graph,
+		    nodeSelected: function(node){
+		      console.log('Node selected: ' + JSON.stringify(node.data));
+		    }
+		  });
+		});
+</script>
+<canvas id="springydemo" width="1300" height="630" />
+</body>
+</html>

@@ -1,0 +1,41 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Twitter-App</title>
+</head>
+<script>
+	function runPython() {
+		document.write('<img src="http://localhost/cgi-bin/FrontEnd.py" />');
+		setTimeout(function() {
+			window.location.href = "http://localhost:5000/static/progress.html";
+		},1000);
+	}
+</script>
+<body>
+<H3>Run Python Data Aggregator</H3>
+	<form name="aggregator" action="http://localhost:5000/static/progress.html">
+		<input type="submit" value="Launch">
+	</form>
+	<H3>Start Word Count</H3>
+	<form name="startwordcount" action="launchwordcount">
+		<input type="submit" value="Word Count">
+	</form>
+	<H3>Start HashTag Pair</H3>
+	<form name="startcohashtag" action="launchcohashtag">
+		<input type="submit" value="Hashtag Pair">
+	</form>
+	<H3>Start HashTag</H3>
+	<form name="starthashtag" action="launchhashtag">
+		<input type="submit" value="Hashtag">
+	</form>
+	<H3>Start ReplyTo</H3>
+	<form name="startreplyto" action="launchreplyto">
+		<input type="submit" value="Reply To">
+	</form>
+	<H3>Start Trends</H3>
+	<form name="starttrends" action="launchtrends">
+		<input type="submit" value="Trends">
+	</form>
+</body>
+</html>

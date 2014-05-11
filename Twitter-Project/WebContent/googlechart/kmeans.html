@@ -1,0 +1,75 @@
+<html>
+<head>
+<link rel="stylesheet" href="../styles/test_style.css">
+<script src="http://code.jquery.com/jquery-1.8.3.min.js"></script>
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+<script>
+	google.load("visualization", "1", {packages:["corechart"]});
+	google.setOnLoadCallback(drawChart);
+	console.log("Begin");
+
+	function drawChart() {
+	  var array = [['ID','Centroid','Users','ID','Radius']];
+	  $.getJSON('http://localhost:8080/Twitter-Project/launchKmeans',
+			  function(wordcount) {
+		  		  var counter = 0;
+		  		  var radius = 100;
+		  		  var decrement = 0;
+		  		  var type = 'Cluster';
+				  $.each(wordcount, function(key,value) {
+					  counter = counter + 1;
+					  console.log(key,value);
+					  array.push(['',
+					              parseFloat(key),
+					              value,
+					              type+' '+counter,
+					              Math.log(value)]);
+					  decrement = decrement + 1;
+				  });
+				  console.log('array built');
+				  var data = google.visualization.arrayToDataTable(array);
+					
+				  var options = {
+				    title: 'K-means Clustering',
+				    hAxis: {title: 'Centroid Value', titleTextStyle: {color: 'red'}, logScale: true, viewWindow: {max:20000000, min:0}},
+				    vAxis: {title: 'Follower Count', titleTextStyle: {color: 'red'}, logScale: true, viewWindow: {max:1500000, min:0}},
+				    bubble: {textStyle: {fontSize: 11}}
+				  };
+				
+				  var chart = new google.visualization.BubbleChart(document.getElementById('chart_div'));
+				  chart.draw(data, options);
+	  });	
+
+	}
+</script>
+</head>
+<body>
+<div>
+	<div class ="pic">
+		<img alt="full screen background image" src="../images/NYC.jpg" id="full-screen-background-image" /> 
+
+		
+	</div>
+	<div id= "About">
+		<p> K-Means</p>
+	</div>
+	<div id="chart_div" style="width: 1000px; height: 400px;"></div>
+	
+	
+	<div class="menus" id="pan">
+		<div class="container">
+			<ul class="menu" rel="sam1">
+				<li><a href="http://localhost:8080/Twitter-Project/home.html">Home</a></li>
+				<li><a href="http://localhost:5000/static/progress.html">Aggregator</a></li>
+				<li class="active"><a href="http://localhost:8080/Twitter-Project/visual.html">Visualization</a></li>
+				<li><a href="http://localhost:8080/Twitter-Project/rawdata.html">Raw Data</a></li>
+				<li><a href="http://localhost:8080/Twitter-Project/report.pdf">Report</a></li>
+				<li><a href="http://localhost:8080/Twitter-Project/aboutproject.html">About Project</a></li>
+				<li><a href="http://localhost:8080/Twitter-Project/about.html">About Us </a></li>
+			</ul>
+		</div>
+	</div>
+</div>
+<script src="../scripts/my_test_scripts.js"></script>
+</body>
+</html>

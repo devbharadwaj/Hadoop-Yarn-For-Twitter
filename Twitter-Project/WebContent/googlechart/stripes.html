@@ -1,0 +1,99 @@
+<html>
+<head>
+<link rel="stylesheet" href="../styles/test_style.css">
+<script src="http://code.jquery.com/jquery-1.8.3.min.js"></script>
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+<script>
+	google.load("visualization", "1", {packages:["corechart"]});
+	google.setOnLoadCallback(drawChart);
+	console.log("Begin");
+
+	function drawChart() {
+		var array = [['Word','Count']];
+		$.getJSON('http://localhost:8080/Twitter-Project/launchpiechart',
+				function(wordcount) {
+					$.each(wordcount, function(key,value) {
+						console.log(key,value);
+						array.push([key,value]);
+					});
+   				    var data = google.visualization.arrayToDataTable(array);
+					
+				    var options = {
+				      title: 'Number of Co-Occurring Words',
+				      hAxis: {title: 'Pairs & Stripes', titleTextStyle: {color: 'red'}}
+				    };
+				
+				    var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
+				    chart.draw(data, options);
+				    google.visualization.events.addListener(chart, 'select', selectHandler); 
+
+				    function selectHandler(e)     {   
+				          var selected = data.getValue(chart.getSelection()[0].row, 0);
+				          switch(selected)
+				          {
+				        	  case 'USA': 
+				        		  window.location.href = "http://localhost:8080/Twitter-Project/sortedcharts/USA.html";
+				        		  break;
+				        	  case 'Obama': 
+				        		  window.location.href = "http://localhost:8080/Twitter-Project/sortedcharts/Obama.html";
+				        		  break;
+				        	  case 'China': 
+				        		  window.location.href = "http://localhost:8080/Twitter-Project/sortedcharts/China.html";
+				        		  break;
+				        	  case 'Ukraine': 
+				        		  window.location.href = "http://localhost:8080/Twitter-Project/sortedcharts/Ukraine.html";
+				        	      break;
+				        	  case '#GleeAlong': 
+				        		  window.location.href = "http://localhost:8080/Twitter-Project/sortedcharts/GleeAlong.html";
+				        		  break;
+				        	  case 'Miami': 
+				        		  window.location.href = "http://localhost:8080/Twitter-Project/sortedcharts/Miami.html";
+				        		  break;
+				        	  case '#AwkwardSeniorYear': 
+				        		  window.location.href = "http://localhost:8080/Twitter-Project/sortedcharts/AwkwardSeniorYear.html";
+				        		  break;
+				        	  case 'MH370': 
+				        		  window.location.href = "http://localhost:8080/Twitter-Project/sortedcharts/MH370.html";
+				        		  break;
+				        	  case '#JackieRobinsonDay': 
+				        		  window.location.href = "http://localhost:8080/Twitter-Project/sortedcharts/JackieRobinsonDay.html";
+				        	      break;
+				        	  case '#himynameiscamila': 
+				        		  window.location.href = "http://localhost:8080/Twitter-Project/sortedcharts/himynameiscamila.html";
+				        		  break;
+				          }
+				    }
+		});
+	}
+</script>
+</head>
+<body>
+<div>
+	<div class ="pic">
+		<img alt="full screen background image" src="../images/NYC.jpg" id="full-screen-background-image" /> 
+
+		
+	</div>
+	<div id= "About">
+		<p> Pairs & Stripes</p>
+	</div>
+	<div id="chart_div" style="width: 1000px; height: 400px;"></div>
+	
+	
+	<div class="menus" id="pan">
+		<div class="container">
+			<ul class="menu" rel="sam1">
+				<li><a href="http://localhost:8080/Twitter-Project/home.html">Home</a></li>
+				<li><a href="http://localhost:5000/static/progress.html">Aggregator</a></li>
+				<li class="active"><a href="http://localhost:8080/Twitter-Project/visual.html">Visualization</a></li>
+				<li><a href="http://localhost:8080/Twitter-Project/rawdata.html">Raw Data</a></li>
+				<li><a href="http://localhost:8080/Twitter-Project/report.pdf">Report</a></li>
+				<li><a href="http://localhost:8080/Twitter-Project/aboutproject.html">About Project</a></li>
+				<li><a href="http://localhost:8080/Twitter-Project/about.html">About Us </a></li>
+			</ul>
+		</div>
+	</div>
+</div>
+<script src="../scripts/my_test_scripts.js"></script>
+</body>
+</html>

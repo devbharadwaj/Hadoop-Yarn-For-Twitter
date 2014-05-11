@@ -1,0 +1,62 @@
+<html>
+<head>
+<link rel="stylesheet" href="../styles/test_style.css">
+<script src="http://code.jquery.com/jquery-1.8.3.min.js"></script>
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+<script>
+	google.load("visualization", "1", {packages:["corechart"]});
+	google.setOnLoadCallback(drawChart);
+	console.log("Begin");
+
+	function drawChart() {
+		var array = [['Word','Count']];
+		$.getJSON('http://localhost:8080/Twitter-Project/launchwordcount',
+				function(wordcount) {
+					$.each(wordcount, function(key,value) {
+						console.log(key,value);
+						array.push([key,value]);
+					});
+					var data = google.visualization.arrayToDataTable(array);
+						
+					var options = {
+					  title: 'Twitter Word Count',
+					  hAxis: {title: 'Word', titleTextStyle: {color: 'red'}}
+					};
+					
+					var chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));
+					chart.draw(data, options);
+
+		});
+	}
+</script>
+</head>
+<body>
+<div>
+	<div class ="pic">
+		<img alt="full screen background image" src="../images/NYC.jpg" id="full-screen-background-image" /> 
+
+		
+	</div>
+	<div id= "About">
+		<p> Word Count</p>
+	</div>
+	<div id="chart_div" style="width: 1000px; height: 400px;"></div>	
+	
+	
+	<div class="menus" id="pan">
+		<div class="container">
+			<ul class="menu" rel="sam1">
+				<li><a href="http://localhost:8080/Twitter-Project/home.html">Home</a></li>
+				<li><a href="http://localhost:5000/static/progress.html">Aggregator</a></li>
+				<li class="active"><a href="http://localhost:8080/Twitter-Project/visual.html">Visualization</a></li>
+				<li><a href="http://localhost:8080/Twitter-Project/rawdata.html">Raw Data</a></li>
+				<li><a href="http://localhost:8080/Twitter-Project/report.pdf">Report</a></li>
+				<li><a href="http://localhost:8080/Twitter-Project/aboutproject.html">About Project</a></li>
+				<li><a href="http://localhost:8080/Twitter-Project/about.html">About Us </a></li>
+			</ul>
+		</div>
+	</div>
+</div>
+<script src="../scripts/my_test_scripts.js"></script>
+</body>
+</html>
