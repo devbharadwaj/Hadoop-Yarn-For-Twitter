@@ -10,10 +10,11 @@ from subprocess import call
 from time import sleep
 
 MAX_TWEETS = 100
-api_key = 'M4840W4WWQEICuF8phOLw'
-api_secret = 'NMWgDzxatXWsv9Mgvotnu0JYFkazYEkuR1oLSkuupeY'
-access_token = '843583182-EpX04p7T23EJg498NiMsDHmAw0KQ0l9OrpLIvghb'
-access_secret = 'X1WrvSSO2Gy7jQqofJvQyKo3rige3E7wa72JjckZRRk62'
+# insert your key and token with your secret key from Twitter
+api_key = 'XXXX' 
+api_secret = 'XXXX'
+access_token = 'XXXX'
+access_secret = 'XXXX'
 hotpicks = ['obama','putin','USA','Ukraine','Crimea','GameOfThrones', 'MH370','China','snowden','NSA','Pulitzer']
 
 class tweets():
