@@ -1,0 +1,142 @@
+#####################################################
+The document was provided by my TA Scott Florentino
+#####################################################
+
+1 - Download Java and install it
+
+cd ~/Downloads
+sudo mkdir -p /usr/local/java
+sudo cp jdk-7u51-linux-x64.tar.gz /usr/local/java
+cd /usr/local/java
+sudo tar -xvf jdk-7u51-linux-x64.tar.gz
+sudo rm jdk-7u51-linux-x64.tar.gz
+sudo ln -s /usr/local/java/jdk1.7.0_51/ /usr/local/java/default
+
+2 - Add Hadoop and Java to environment variables
+
+vim .bashrc
+# add these lines:
+	export JAVA_HOME=/usr/local/java/default
+	export PATH=$PATH:$JAVA_HOME/bin
+	export HADOOP_HOME=/usr/local/hadoop
+	export HADOOP_INSTALL=/usr/local/hadoop
+	export PATH=$PATH:$HADOOP_HOME/bin
+	export PATH=$PATH:$HADOOP_HOME/sbin
+	export HADOOP_MAPRED_HOME=$HADOOP_INSTALL
+	export HADOOP_COMMON_HOME=$HADOOP_INSTALL
+	export HADOOP_HDFS_HOME=$HADOOP_INSTALL
+	export YARN_HOME=$HADOOP_INSTALL
+
+if 64-bit Add these lines to .bashrc or .bash_profile
+	export HADOOP_COMMON_LIB_NATIVE_DIR=$HADOOP_INSTALL/lib/native 
+	export HADOOP_OPTS="-Djava.library.path=$HADOOP_INSTALL/lib"
+
+source .bashrc
+
+3 - Update system Java preferences
+
+sudo update-alternatives --install "/usr/bin/java" "java" "/usr/local/java/jdk1.7.0_51/bin/java" 1
+sudo update-alternatives --install "/usr/bin/javac" "javac" "/usr/local/java/jdk1.7.0_51/bin/javac" 1
+sudo update-alternatives --install "/usr/bin/javaws" "javaws" "/usr/local/java/jdk1.7.0_51/bin/javaws" 1
+
+echo $JAVA_HOME
+java -version
+
+4 - Install and configure SSH
+
+sudo apt-get update
+sudo apt-get install openssh-server -y
+
+ssh-keygen -t rsa -P ""
+cat $HOME/.ssh/id_rsa.pub >> $HOME/.ssh/authorized_keys
+ssh-add ~/.ssh/id_rsa
+ssh localhost
+
+5 - Disable IPv6
+
+vim /etc/sysctl.conf
+	# disable ipv6
+	net.ipv6.conf.all.disable_ipv6 = 1
+	net.ipv6.conf.default.disable_ipv6 = 1
+	net.ipv6.conf.lo.disable_ipv6 = 1
+
+sudo sysctl -p /etc/sysctl.conf
+cat /proc/sys/net/ipv6/conf/all/disable_ipv6
+
+6 - Install Hadoop, use default username to simplify installation
+
+cd ~/Desktop 
+wget http://mirror.cc.columbia.edu/pub/software/apache/hadoop/common/hadoop-2.2.0/hadoop-2.2.0.tar.gz
+sudo tar -xvf hadoop-2.2.0.tar.gz -C /usr/local
+sudo ln -s /usr/local/hadoop-2.2.0/ /usr/local/hadoop/
+sudo cp /usr/local/hadoop-2.2.0/etc/hadoop/mapred-site.xml.template /usr/local/hadoop-2.2.0/etc/hadoop/mapred-site.xml
+sudo chown -R -h aeyate:aeyate /usr/local/hadoop-2.2.0/
+
+sudo mkdir -p /var/local/namenode
+sudo mkdir -p /var/local/datanode
+sudo chown aeyate:aeyate /var/local/namenode
+sudo chown aeyate:aeyate /var/local/datanode
+sudo chmod 755 /var/local/namenode
+sudo chmod 755 /var/local/datanode
+
+hadoop version
+
+7 - Configure Hadoop
+
+cd /usr/local/hadoop-2.2.0/etc/hadoop
+
+vim core-site.xml
+	<property>
+		 <name>fs.default.name</name>
+		 <value>hdfs://localhost:9000</value>
+	</property>
+
+vim yarn-site.xml
+	<property>
+		 <name>yarn.nodemanager.aux-services</name>
+		 <value>mapreduce_shuffle</value>
+	</property>
+	<property>
+		 <name>yarn.nodemanager.aux-services.mapreduce.shuffle.class</name>
+		 <value>org.apache.hadoop.mapred.ShuffleHandler</value>
+	</property>
+
+vim mapred-site.xml
+	<property>
+		 <name>mapreduce.framework.name</name>
+		 <value>yarn</value>
+	</property>
+
+vim hdfs-site.xml
+<property>
+   <name>dfs.replication</name>
+   <value>1</value>
+ </property>
+ <property>
+   <name>dfs.namenode.name.dir</name>
+   <value>file:/var/local/namenode</value>
+ </property>
+ <property>
+   <name>dfs.datanode.data.dir</name>
+   <value>file:/var/local/datanode</value>
+ </property>
+
+vim hadoop-env.sh
+	export JAVA_HOME=/usr/local/java/default
+
+
+8 - start Hadoop
+
+hdfs namenode -format
+start-dfs.sh
+start-yarn.sh
+jps
+
+9 - run an example
+
+cd /usr/local/hadoop
+hadoop jar share/hadoop/mapreduce/hadoop-mapreduce-examples-2.2.0.jar pi 2 5
+
+
+localhost:8088
+localhost:50070
